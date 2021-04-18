@@ -1,0 +1,52 @@
+version: '2'
+
+services:
+
+  app:
+    build: App
+    restart: always
+    depends_on:
+        - db-master
+        - db-slave
+    ports:
+        - '8080:80'
+    volumes:
+  #      - ./App/conf/php/php.ini:/usr/local/etc/php/conf.d/php.ini
+  #      - ./App/conf/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+        - ./App/www/:/var/www/html/
+  db-master:    
+    image: docker.io/bitnami/postgresql:11
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'postgresql_master_data:/bitnami/postgresql'
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_DATABASE=my_database
+      - ALLOW_EMPTY_PASSWORD=yes
+
+
+  db-slave:
+    image: docker.io/bitnami/postgresql:11
+    ports:
+      - '5432'
+    depends_on:
+      - db-master
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=repl_user
+      - POSTGRESQL_REPLICATION_PASSWORD=repl_password
+      - POSTGRESQL_MASTER_HOST=db-master
+      - POSTGRESQL_PASSWORD=my_password
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+      - ALLOW_EMPTY_PASSWORD=yes
+volumes:
+  postgresql_master_data:
+    driver: local
+
+
+
