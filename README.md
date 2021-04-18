@@ -1,4 +1,4 @@
-# Basic php app utilizing postgresql db
+# Basic php app utilizing postgresql
 
 #Endpoints
 
