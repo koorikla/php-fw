@@ -12,7 +12,7 @@ env:
     postgre_user: "postgres"
     postgre_pass: "my_password"
     postgre_db: "postgres"
-    alerts_email: "krymzy@gmail.com"
+    alerts_email: "test@domain.com"
 
 
 image:
